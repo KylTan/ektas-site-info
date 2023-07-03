@@ -37,6 +37,25 @@ function site_info_display() {
     } elseif (isset($gd_info['GD'])) {
         $gd_formats = implode(', ', array_keys($gd_info['GD']));
     }
+
+    // Check if JSON request --> for json reqests but its admin so cant curl
+    // if (isset($_GET['json'])) {
+    //     // Set JSON headers
+    //     header('Content-Type: application/json');
+        
+    //     // Create JSON response
+    //     $site_info = array(
+    //         'wordpress_version' => get_bloginfo('version'),
+    //         'site_language' => get_bloginfo('language'),
+    //         'user_language' => get_user_locale(),
+    //         'timezone' => date_default_timezone_get(),
+    //         // ...other site information...
+    //     );
+
+    //     // Output JSON response
+    //     echo json_encode($site_info);
+    //     exit; // Terminate further processing
+    // }
     
     ?>
     <div class="wrap">
@@ -99,7 +118,7 @@ function site_info_display() {
             echo '<thead><tr><th>Name</th><th>Status</th><th>Update</th><th>Version</th></tr></thead>';
             echo '<tbody>';
             foreach ($plugins as $plugin_file => $plugin_data) {
-                $plugin_name = $plugin_data['Name'];
+                $plugin_name = sanitize_title($plugin_data['Name']);
                 $plugin_status = is_plugin_active($plugin_file) ? 'Active' : 'Inactive';
                 $plugin_update = get_plugin_updates();
                 $plugin_version = $plugin_data['Version'];
