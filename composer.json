@@ -1,0 +1,10 @@
+{
+    "name": "KylTan/ektas-site-info",
+    "description": "",
+    "keywords": ["wordpress", "plugin"],
+    "homepage": "https://github.com/KylTan/ektas-site-info.git",
+    "type": "wordpress-plugin",
+    "require": {
+      "php": ">=8.0"
+    }
+  }
