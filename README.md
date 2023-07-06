@@ -25,3 +25,7 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 ### 0.1.0: 
 * Functionality to view site info from the admin page's sidebar 
 * Includes most info with some limits (imagick, gd_formats)
+
+### 0.2.0: 
+* View is now in JSON format
+* Button added for faster copy-pasting
