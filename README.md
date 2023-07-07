@@ -20,7 +20,7 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 1. Once activated, the "Site Info" menu item will appear in the WordPress admin menu.
 2. Click on the "Site Info" menu item to view the site details.
 
-
+## Update Notes
 
 ### 0.1.0: 
 * Functionality to view site info from the admin page's sidebar 
@@ -29,3 +29,7 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 ### 0.2.0: 
 * View is now in JSON format
 * Button added for faster copy-pasting
+
+### 0.3.0 alpha
+* Added text field for sending a curl post request
+* Sends back a response, but without the credentials for authentication it says you can't post
