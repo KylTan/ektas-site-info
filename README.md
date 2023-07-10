@@ -38,3 +38,7 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 * Added text field for login credentials and authentication
 * You can now send a request by using your username and application password, which creates a new acf post of the post type, but doesn't quite include the info yet.
 * `endpoint should be something like http://t-12-site.local/wp-json/wp/v2/<acf post>/`
+
+### 0.3.2
+* fixed an issue where posting after providing proper info on all fields would yield a 401 error (not enough permissions)
+* Error was caused by a lack of cURL authentication code on a certain line
