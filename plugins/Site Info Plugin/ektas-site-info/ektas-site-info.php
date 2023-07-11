@@ -2,6 +2,7 @@
 /*
 Plugin Name: Site Info
 Description: Displays site details in the WordPress admin page.
+Version: 0.4.0
 */
 
 // Add the menu item to the admin menu
