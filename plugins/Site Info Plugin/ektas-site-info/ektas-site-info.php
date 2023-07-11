@@ -2,7 +2,6 @@
 /*
 Plugin Name: Site Info
 Description: Displays site details in the WordPress admin page.
-Version: 0.4.0
 */
 
 // Add the menu item to the admin menu
@@ -232,25 +231,16 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Create an array containing the site info and credentials
-    $site_info = array(
-        'wordpress_version' => get_bloginfo('version'),
-        'site_language' => get_bloginfo('language'),
-        'user_language' => get_user_locale(),
-        'timezone' => date_default_timezone_get(),
-        // ...other site information...
+    // Create the post data
+    $post_data = array(
+        'title' => 'Site Info Post',
+        'content' => json_encode($data, JSON_PRETTY_PRINT),
+        'status' => 'publish',
+        'type' => 'site'
     );
 
-    // Include the username and password in the site info array
-    //  $site_info['username'] = $username;
-    //  $site_info['password'] = $password;
-
-    // Convert the site info array to JSON
-    $data_string = json_encode($site_info);
-
-    // $current_user = wp_get_current_user();
-    // var_dump($current_user->roles); // Check the user's roles
-    // var_dump($current_user->allcaps); // Check the user's capabilities
+    // Convert the post data to JSON
+    $data_string = json_encode($post_data);
 
     // Send a REST API POST request
     $ch = curl_init($endpoint);
@@ -265,7 +255,6 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
     ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    //check for response
     $response = curl_exec($ch);
     curl_close($ch);
 
@@ -277,8 +266,8 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
         echo '<br>';
         echo 'Response from the endpoint:<br>';
         echo '<pre>' . htmlentities($response) . '</pre>';
-	
     }
+
 
     // Decode the response JSON to extract the post ID
     $response_data = json_decode($response, true);
@@ -296,7 +285,7 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
         echo 'ACF post created with ID: ' . $post_id;
     } else {
         echo 'Failed to create ACF post.';
-        
+        echo $post_id;
     }
   }
 }
