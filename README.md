@@ -42,3 +42,6 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 ### 0.3.2
 * fixed an issue where posting after providing proper info on all fields would yield a 401 error (not enough permissions)
 * Error was caused by a lack of cURL authentication code on a certain line
+
+### 0.4.0
+* displays info but only works when sending to the site's own acf field
