@@ -45,3 +45,11 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 
 ### 0.4.0
 * displays info but only works when sending to the site's own acf field
+
+### 0.5.0
+* JSON now displays fully on newly created post
+* Issue where sending to your own site causes formatting errors on JSON
+
+### 0.5.1
+* Fixed the formatting of JSON to be compatible with the task 26 plugin
+* Post title now reflects the name of the site it came from
