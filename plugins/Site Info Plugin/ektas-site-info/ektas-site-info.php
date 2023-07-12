@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Site Info
-Description: Displays site details on the WordPress admin page.
-Version: 0.5.0
+Description: Displays site details in the WordPress admin page.
+Version: 0.5.1
 */
 
 // Add the menu item to the admin menu
@@ -59,85 +59,83 @@ function site_info_display() {
     // }
     
 
-$data = array();
+ $data['wp-core'] = array(
+        'version' => get_bloginfo('version'),
+        'site_language' => get_bloginfo('language'),
+        'user_language' => get_user_locale(),
+        'timezone' => date_default_timezone_get(),
+        'permalink' => get_option('permalink_structure'),
+        'https_status' => is_ssl() ? 'true' : 'false',
+        'multisite' => is_multisite() ? 'true' : 'false'
+    );
 
-$data['Site Info'] = array(
-    'WordPress Version' => get_bloginfo('version'),
-    'Site Language' => get_bloginfo('language'),
-    'User Language' => get_user_locale(),
-    'Timezone' => date_default_timezone_get(),
-    'Permalink Structure' => get_option('permalink_structure'),
-    'HTTPS Status' => is_ssl() ? 'Enabled' : 'Disabled',
-    'Multisite' => is_multisite() ? 'Enabled' : 'Disabled'
-);
-
-$active_theme = wp_get_theme();
-$data['Active Theme'] = array(
-    'Name' => $active_theme->get('Name'),
-    'Status' => 'Active',
-    'Update' => 'None',
-    'Version' => $active_theme->get('Version')
-);
-
-$plugins = get_plugins();
-$pluginsData = array();
-foreach ($plugins as $plugin_file => $plugin_data) {
-    $plugin_name = sanitize_title($plugin_data['Name']);
-    $plugin_status = is_plugin_active($plugin_file) ? 'Active' : 'Inactive';
-    $plugin_update = get_plugin_updates();
-    $plugin_version = $plugin_data['Version'];
-
-    if (isset($plugin_update[$plugin_file])) {
-        $plugin_update_version = $plugin_update[$plugin_file]->update->new_version;
-    } else {
-        $plugin_update_version = 'None';
+    $data['wp-theme-list'] = array();
+    $themes = wp_get_themes();
+    foreach ($themes as $slug => $theme) {
+        $data['wp-theme-list'][] = array(
+            'slug' => $slug,
+            'status' => 'active',
+            'update' => 'none',
+            'version' => $theme->get('Version')
+        );
     }
 
-    $pluginsData[$plugin_name] = array(
-        'Status' => $plugin_status,
-        'Update' => $plugin_update_version,
-        'Version' => $plugin_version
+    $data['wp-plugin-list'] = array();
+    $plugins = get_plugins();
+    $plugin_updates = get_plugin_updates();
+    foreach ($plugins as $plugin_file => $plugin_data) {
+        $data['wp-plugin-list'][] = array(
+            'name' => sanitize_title($plugin_data['Name']),
+            'status' => is_plugin_active($plugin_file) ? 'active' : 'inactive',
+            'update' => isset($plugin_updates[$plugin_file]) ? 'available' : 'none',
+            'version' => $plugin_data['Version']
+        );
+    }
+
+    $data['wp-server'] = array(
+        'server_architecture' => $_SERVER['SERVER_SOFTWARE'],
+        'php_version' => phpversion(),
+        'php_sapi' => php_sapi_name(),
+        'max_input_variables' => ini_get('max_input_vars'),
+        'time_limit' => ini_get('max_execution_time'),
+        'memory_limit' => ini_get('memory_limit'),
+        'max_input_time' => ini_get('max_input_time'),
+        'upload_max_filesize' => ini_get('upload_max_filesize'),
+        'php_post_max_size' => ini_get('post_max_size'),
+        'curl_version' => curl_version()['version'],
+        'suhosin' => extension_loaded('suhosin') ? 'true' : 'false',
+        'imagick_availability' => extension_loaded('imagick') ? 'true' : 'false',
+        'pretty_permalinks' => get_option('permalink_structure') ? 'true' : 'false',
+        'htaccess_extra_rules' => get_option('rewrite_rules') ? 'true' : 'false'
     );
-}
-$data['Installed Plugins'] = $pluginsData;
 
-$data['Server Information'] = array(
-    'Server Architecture' => $_SERVER['SERVER_SOFTWARE'],
-    'HTTPD Software' => $_SERVER['SERVER_SOFTWARE'],
-    'PHP Version' => phpversion(),
-    'PHP SAPI' => php_sapi_name(),
-    'Max Input Variables' => ini_get('max_input_vars'),
-    'Time Limit' => ini_get('max_execution_time') . ' seconds',
-    'Memory Limit' => ini_get('memory_limit'),
-    'Max Input Time' => ini_get('max_input_time') . ' seconds',
-    'Upload Max Filesize' => ini_get('upload_max_filesize'),
-    'PHP Post Max Size' => ini_get('post_max_size'),
-    'CURL Version' => curl_version()['version'],
-    'Suhosin' => extension_loaded('suhosin') ? 'Enabled' : 'Disabled',
-    'Imagick Availability' => extension_loaded('imagick') ? 'Enabled' : 'Disabled',
-    'Pretty Permalinks' => get_option('permalink_structure') ? 'Enabled' : 'Disabled',
-    '.htaccess Extra Rules' => get_option('rewrite_rules') ? 'Enabled' : 'Disabled'
-);
+    $data['wp-database'] = array(
+        'extension' => 'mysqli',
+        'server_version' => $mysql_version,
+        'client_version' => $mysql_version,
+        'max_allowed_packet' => $max_allowed_packet,
+        'max_connections' => $max_connections
+    );
 
-$data['Constants'] = array(
-    'WP_HOME' => defined('WP_HOME') ? WP_HOME : 'undefined',
-    'WP_SITEURL' => defined('WP_SITEURL') ? WP_SITEURL : 'undefined',
-    'WP_CONTENT_DIR' => WP_CONTENT_DIR,
-    'WP_PLUGIN_DIR' => WP_PLUGIN_DIR,
-    'WP_MEMORY_LIMIT' => WP_MEMORY_LIMIT,
-    'WP_MAX_MEMORY_LIMIT' => WP_MAX_MEMORY_LIMIT,
-    'WP_DEBUG' => WP_DEBUG ? 'true' : 'false',
-    'WP_DEBUG_DISPLAY' => WP_DEBUG_DISPLAY ? 'true' : 'false',
-    'WP_DEBUG_LOG' => WP_DEBUG_LOG ? 'true' : 'false',
-    'SCRIPT_DEBUG' => SCRIPT_DEBUG ? 'true' :'false',
-    'WP_CACHE' => WP_CACHE ? 'true' : 'false',
-    'CONCATENATE_SCRIPTS' => defined('CONCATENATE_SCRIPTS') ? CONCATENATE_SCRIPTS : 'undefined',
-    'COMPRESS_SCRIPTS' => defined('COMPRESS_SCRIPTS') ? COMPRESS_SCRIPTS : 'undefined',
-    'COMPRESS_CSS' => defined('COMPRESS_CSS') ? COMPRESS_CSS : 'undefined',
-    'WP_ENVIRONMENT_TYPE' => WP_ENVIRONMENT_TYPE,
-    'DB_CHARSET' => DB_CHARSET,
-    'DB_COLLATE' => defined('DB_COLLATE') ? DB_COLLATE : 'undefined'
-);
+    $data['wp-constants'] = array(
+        'WP_HOME' => defined('WP_HOME') ? WP_HOME : 'undefined',
+        'WP_SITEURL' => defined('WP_SITEURL') ? WP_SITEURL : 'undefined',
+        'WP_CONTENT_DIR' => WP_CONTENT_DIR,
+        'WP_PLUGIN_DIR' => WP_PLUGIN_DIR,
+        'WP_MEMORY_LIMIT' => WP_MEMORY_LIMIT,
+        'WP_MAX_MEMORY_LIMIT' => WP_MAX_MEMORY_LIMIT,
+        'WP_DEBUG' => WP_DEBUG ? 'true' : 'false',
+        'WP_DEBUG_DISPLAY' => WP_DEBUG_DISPLAY ? 'true' : 'false',
+        'WP_DEBUG_LOG' => WP_DEBUG_LOG ? 'true' : 'false',
+        'SCRIPT_DEBUG' => SCRIPT_DEBUG ? 'true' : 'false',
+        'WP_CACHE' => WP_CACHE ? 'true' : 'false',
+        'CONCATENATE_SCRIPTS' => defined('CONCATENATE_SCRIPTS') ? CONCATENATE_SCRIPTS : 'undefined',
+        'COMPRESS_SCRIPTS' => defined('COMPRESS_SCRIPTS') ? COMPRESS_SCRIPTS : 'undefined',
+        'COMPRESS_CSS' => defined('COMPRESS_CSS') ? COMPRESS_CSS : 'undefined',
+        'WP_ENVIRONMENT_TYPE' => WP_ENVIRONMENT_TYPE,
+        'DB_CHARSET' => DB_CHARSET,
+        'DB_COLLATE' => defined('DB_COLLATE') ? DB_COLLATE : 'undefined'
+    );
 
 $filesystem = array(
     'wordpress' => is_writable(ABSPATH) ? 'writable' : 'not writable',
@@ -234,7 +232,7 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
 
     // Create the post data
     $post_data = array(
-        'title' => 'Site Info Post',
+        'title' => get_bloginfo('name') . ' Info',
         'content' => json_encode($data, JSON_PRETTY_PRINT),
         'status' => 'publish',
         'type' => 'site'
