@@ -2,7 +2,7 @@
 /*
 Plugin Name: Site Info
 Description: Displays site details in the WordPress admin page.
-Version: 0.5.1
+Version: 0.5.2
 */
 
 // Add the menu item to the admin menu
@@ -205,21 +205,30 @@ $data_string = json_encode($data, JSON_PRETTY_PRINT);
 $data_string_formatted = ($data_string); // Convert newlines to HTML line breaks
 
 // Echo the formatted data with a copy button
-echo '<div>';
-echo '<textarea id="json-output" rows="40" cols="80">';
+echo '<div style=" padding:15px; padding-bottom: 0px;">';
+echo '<h1> EKTAS Site Info Plugin </h1>';
+echo '<h4> Export site info at the click of a button! </h4>';
+echo '<hr></hr>';
+echo "<h3> Your Site's Info JSON</h3>";
+echo '<textarea id="json-output" rows="20" cols="70">';
 echo $data_string_formatted;
 echo '</textarea>';
 echo '<br>';
-echo '<button onclick="copyToClipboard()">Copy</button>';
+echo '<button onclick="copyToClipboard()">Copy to Clipboard</button>';
 echo '</div>';
 
 // Form for specifying the endpoint, username, and password
-echo '<div>';
+echo '<div style="padding: 10px;">';
+echo '<h4> Make sure your endpoint can recieve a post in the post_content, and that you are using a valid 
+        application password</h4>';
 echo '<form method="POST">';
-echo 'Endpoint: <input type="text" name="endpoint" placeholder="http://example.com/api-endpoint"><br>';
-echo 'Username: <input type="text" name="username"><br>';
-echo 'Password: <input type="password" name="password"><br>';
-echo '<input type="submit" value="Send POST Request">';
+echo '<label for="endpoint">Endpoint:</label><br>';
+echo '<input type="text" name="endpoint" id="endpoint" placeholder="http://example.com/api-endpoint"><br>';
+echo '<label for="username">Username:</label><br>';
+echo '<input type="text" name="username" id="username"><br>';
+echo '<label for="password">Password:</label><br>';
+echo '<input type="password" name="password" id="password"><br>';
+echo '<input type="submit" value="Send POST Request" style="margin-top: 15px;">';
 echo '</form>';
 echo '</div>';
 
@@ -257,20 +266,60 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
     $response = curl_exec($ch);
     curl_close($ch);
 
-    // Check the response
-    if ($response === false) {
-        echo 'Failed to send the POST request.';
-    } else {
-        echo 'POST request sent successfully.';
-        echo '<br>';
-        echo 'Response from the endpoint:<br>';
-        echo '<pre>' . htmlentities($response) . '</pre>';
-    }
+    //Check the response for debug
+    // if ($response === false) {
+    //     echo 'Failed to send the POST request.';
+    // } else {
+    //     echo 'POST request sent successfully.';
+    //     echo '<br>';
+    //     echo 'Response from the endpoint:<br>';
+    //     echo '<pre style="white-space: pre-wrap; word-wrap: break-word;">' . htmlentities($response) . '</pre>';
+    // }
 
 
     // Decode the response JSON to extract the post ID
     $response_data = json_decode($response, true);
-    var_dump($response_data); // Output the response data for debugging purposes
+?>
+
+<style>
+  .collapsible-content {
+    display: none;
+  }
+
+  .collapsible-trigger {
+    display: inline-block;
+    cursor: pointer;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-image: linear-gradient(to bottom, #fff 0%, #f2f2f2 100%);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s;
+  }
+</style>
+
+
+<?php //output response with a collapsible button ?>
+<script>
+  function toggleCollapsible() {
+    const content = document.getElementById('collapsible-content');
+    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+  }
+</script>
+
+<div class="collapsible">
+  <div class="collapsible-trigger" onclick="toggleCollapsible()">Reveal Response</div>
+  <div id="collapsible-content" class="collapsible-content">
+    <pre><?php echo htmlentities(var_export($response_data, true)); ?></pre>
+  </div>
+</div>
+
+<?php
     if (isset($response_data['id'])) {
         $post_id = $response_data['id'];
 
@@ -281,14 +330,15 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
         );
         wp_update_post($updated_post);
 
-        echo 'ACF post created with ID: ' . $post_id;
+        echo 'ACF post created successfully with ID: ' . $post_id;
     } else {
         echo 'Failed to create ACF post.';
-        echo $post_id;
+
     }
   }
 }
 ?>
+
 
 
 
