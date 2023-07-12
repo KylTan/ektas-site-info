@@ -53,3 +53,10 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 ### 0.5.1
 * Fixed the formatting of JSON to be compatible with the task 26 plugin
 * Post title now reflects the name of the site it came from
+
+### 0.5.2
+* Improved page design
+  * Fixed Spacing and Alignment to be consistent
+  * Added titles and text for context
+  * Resized some elements
+  * Collapsible button for the http response
