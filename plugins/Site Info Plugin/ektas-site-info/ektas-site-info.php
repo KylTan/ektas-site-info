@@ -2,7 +2,7 @@
 /*
 Plugin Name: Site Info
 Description: Displays site details in the WordPress admin page.
-Version: 0.5.4
+Version: 0.5.5
 */
 
 // Add the menu item to the admin menu
@@ -94,7 +94,8 @@ function site_info_display() {
     }
 
     $data['wp-server'] = array(
-        'server_architecture' => $_SERVER['SERVER_SOFTWARE'],
+        'server_architecture' => php_uname('s') . ' ' . php_uname('r'),
+        'httpd_software' => $_SERVER['SERVER_SOFTWARE'],
         'php_version' => phpversion(),
         'php_sapi' => php_sapi_name(),
         'max_input_variables' => ini_get('max_input_vars'),
@@ -112,8 +113,8 @@ function site_info_display() {
 
     $data['wp-database'] = array(
         'extension' => 'mysqli',
-        'server_version' => $mysql_version,
-        'client_version' => $mysql_version,
+        'server_version' => $wpdb->db_version(),
+        'client_version' => $wpdb->db_version('mysql'),
         'max_allowed_packet' => $max_allowed_packet,
         'max_connections' => $max_connections
     );
@@ -147,27 +148,10 @@ $filesystem = array(
 );
 $data['wp-filesystem'] = $filesystem;
 
-$data['wp-core'] = array(
-    'WordPress Version' => get_bloginfo('version'),
-    'PHP Version' => phpversion(),
-    'MySQL Version' => $mysql_version
-);
-
-$data['wp-environment'] = array(
-    'WP_DEBUG' => WP_DEBUG ? 'true' : 'false',
-    'WP_DEBUG_DISPLAY' => WP_DEBUG_DISPLAY ? 'true' : 'false',
-    'WP_DEBUG_LOG' => WP_DEBUG_LOG ? 'true' : 'false',
-    'WP_ENVIRONMENT_TYPE' => WP_ENVIRONMENT_TYPE,
-    'DB_CHARSET' => DB_CHARSET,
-    'DB_COLLATE' => defined('DB_COLLATE') ? DB_COLLATE : 'undefined'
-);
-
-$data['wp-filesystem'] = $filesystem;
-
 $data['wp-media'] = array(
-    'image_editor' => wp_image_editor_supports() ? 'Available' : 'Not available',
-    'imagick_module_version' => defined('IMAGICK_MODULE_VERSION') ? IMAGICK_MODULE_VERSION : 'Not available',
-    'imagemagick_version' => defined('IMAGEMAGICK_VERSION') ? IMAGEMAGICK_VERSION : 'Not available',
+    'image_editor' => (class_exists('WP_Image_Editor_GD') ? 'WP_Image_Editor_GD' : 'Not available'),
+    'imagick_module_version' => defined('IMAGICK_MODULE_VERSION') ? 'IMAGICK_MODULE_VERSION' : 'Not available',
+    'imagemagick_version' => defined('IMAGEMAGICK_VERSION') ? 'IMAGEMAGICK_VERSION' : 'Not available',
     'file_uploads' => ini_get('file_uploads') ? 'File uploads is turned on' : 'File uploads is turned off',
     'post_max_size' => ini_get('post_max_size'),
 	 'upload_max_filesize' => ini_get('upload_max_filesize'),
@@ -175,13 +159,13 @@ $data['wp-media'] = array(
     'max_file_uploads' => (int) ini_get('max_file_uploads'),
     'gd_version' => $gd_version,
     'gd_formats' => $gd_formats,
-    'ghostscript_version' => 'Not available'
+    'ghostscript_version' => (function_exists('gs_version') ? gs_version() : 'Not available')
 	
 );
 
 // header('Content-Type: application/json');
 // echo json_encode($data, JSON_PRETTY_PRINT);
-
+echo json_encode($data['wp-core'], JSON_PRETTY_PRINT);
 // Format the data
 foreach ($data as $section => $sectionData) {
     $sectionFormattedData = [];
