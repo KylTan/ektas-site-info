@@ -2,7 +2,7 @@
 /*
 Plugin Name: Site Info
 Description: Displays site details in the WordPress admin page.
-Version: 0.5.3
+Version: 0.5.4
 */
 
 // Add the menu item to the admin menu
@@ -204,6 +204,25 @@ foreach ($data as $section => $sectionData) {
 // Output the data with JSON formatting
 $data_string = json_encode($data, JSON_PRETTY_PRINT);
 $data_string_formatted = ($data_string); // Convert newlines to HTML line breaks
+
+?>
+
+<script>
+    // JavaScript function to copy the contents of the textarea to the clipboard
+    function copyToClipboard() {
+        const textarea = document.getElementById('json-output');
+        textarea.select();
+        textarea.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text to the clipboard
+        document.execCommand("copy");
+
+        // Provide visual feedback to the user
+        alert("Data copied to clipboard!");
+    }
+</script>
+
+<?php
 
 // Echo the formatted data with a copy button
 echo '<div style=" padding:15px; padding-bottom: 0px;">';
