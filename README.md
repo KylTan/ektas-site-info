@@ -69,3 +69,6 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 
 ### 0.5.5
 * Fixed mising and incorrect values within the Site Info JSON to be more accurate to original Site Health.
+
+### 0.5.6 
+* small bug removing a line of debug code
