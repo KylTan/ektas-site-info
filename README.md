@@ -60,3 +60,9 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
   * Added titles and text for context
   * Resized some elements
   * Collapsible button for the http response
+
+### 0.5.3
+* changed code so that the plugin section of the JSON reflects true slugnames so plugin 26 is compatible
+  
+### 0.5.4
+* restored copy button functionality 
