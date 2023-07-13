@@ -2,7 +2,7 @@
 /*
 Plugin Name: Site Info
 Description: Displays site details in the WordPress admin page.
-Version: 0.5.5
+Version: 0.5.6
 */
 
 // Add the menu item to the admin menu
@@ -165,7 +165,7 @@ $data['wp-media'] = array(
 
 // header('Content-Type: application/json');
 // echo json_encode($data, JSON_PRETTY_PRINT);
-echo json_encode($data['wp-core'], JSON_PRETTY_PRINT);
+
 // Format the data
 foreach ($data as $section => $sectionData) {
     $sectionFormattedData = [];
