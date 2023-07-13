@@ -2,7 +2,7 @@
 /*
 Plugin Name: Site Info
 Description: Displays site details in the WordPress admin page.
-Version: 0.5.2
+Version: 0.5.3
 */
 
 // Add the menu item to the admin menu
@@ -84,8 +84,9 @@ function site_info_display() {
     $plugins = get_plugins();
     $plugin_updates = get_plugin_updates();
     foreach ($plugins as $plugin_file => $plugin_data) {
-        $data['wp-plugin-list'][] = array(
-            'name' => sanitize_title($plugin_data['Name']),
+        $plugin_slug = dirname($plugin_file);
+		$data['wp-plugin-list'][] = array(
+            'name' => $plugin_slug,
             'status' => is_plugin_active($plugin_file) ? 'active' : 'inactive',
             'update' => isset($plugin_updates[$plugin_file]) ? 'available' : 'none',
             'version' => $plugin_data['Version']
