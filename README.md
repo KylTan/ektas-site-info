@@ -1,13 +1,14 @@
-# ektas-site-plugin
+# ektas-site-info Plugin
 ***
-This is the plugin made by ET and AS that displays site health information that can be found in the admin tools section. Below are the version release details.
-# Site Info Plugin
-
-The Site Info plugin displays site details in the WordPress admin page.
+This is the plugin made by ET and AS that displays site health information that can be found in the admin tools section. You may also opt to send this data in JSON Format to an endpoint via a cURL request. Below are the version release details.
 
 ## Description
 
 The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. When clicked, it displays various details about the site, including WordPress version, server information, active theme, installed plugins, and more.
+
+You can also send this info to a compatible endpoint, as long as you have the proper credentials, and the proper permissions for the target site.
+
+Enjoy 🤠
 
 ## Installation
 
@@ -19,6 +20,8 @@ The Site Info plugin adds a "Site Info" menu item to the WordPress admin menu. W
 
 1. Once activated, the "Site Info" menu item will appear in the WordPress admin menu.
 2. Click on the "Site Info" menu item to view the site details.
+3. Type in the target endpoint, target site username, and a working application password (also in target site)
+4. Click send and the page should notify you if you if it was succesful.
 
 ## Update Notes
 
