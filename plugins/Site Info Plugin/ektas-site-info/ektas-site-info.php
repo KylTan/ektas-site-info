@@ -2,7 +2,8 @@
 /*
 Plugin Name: Site Info
 Description: Displays site details in the WordPress admin page.
-Version: 0.5.6
+Authors: Ansley and Kyle
+Version: 0.5.7
 */
 
 // Add the menu item to the admin menu
@@ -38,26 +39,6 @@ function site_info_display() {
     } elseif (isset($gd_info['GD'])) {
         $gd_formats = implode(', ', array_keys($gd_info['GD']));
     }
-
-    // Check if JSON request --> for json reqests but its admin so cant curl
-    // if (isset($_GET['json'])) {
-    //     // Set JSON headers
-    //     header('Content-Type: application/json');
-        
-    //     // Create JSON response
-    //     $site_info = array(
-    //         'wordpress_version' => get_bloginfo('version'),
-    //         'site_language' => get_bloginfo('language'),
-    //         'user_language' => get_user_locale(),
-    //         'timezone' => date_default_timezone_get(),
-    //         // ...other site information...
-    //     );
-
-    //     // Output JSON response
-    //     echo json_encode($site_info);
-    //     exit; // Terminate further processing
-    // }
-    
 
  $data['wp-core'] = array(
         'version' => get_bloginfo('version'),
@@ -163,9 +144,6 @@ $data['wp-media'] = array(
 	
 );
 
-// header('Content-Type: application/json');
-// echo json_encode($data, JSON_PRETTY_PRINT);
-
 // Format the data
 foreach ($data as $section => $sectionData) {
     $sectionFormattedData = [];
@@ -206,35 +184,35 @@ $data_string_formatted = ($data_string); // Convert newlines to HTML line breaks
     }
 </script>
 
+<!-- // Echo the formatted data with a copy button -->
+<div style=" padding:15px padding-bottom: 0px">
+<h1> EKTAS Site Info Plugin </h1>
+<h4> Export site info at the click of a button! </h4>
+<hr></hr>
+"<h3> Your Sites Info JSON</h3>"
+<textarea id="json-output" rows="20" cols="70">
+<?php echo $data_string_formatted; ?>
+</textarea>
+<br>
+<button onclick="copyToClipboard()">Copy to Clipboard</button>
+</div>
+
+<!-- // Form for specifying the endpoint, username, and password -->
+<div style="padding: 10px">
+<h4> Make sure your endpoint can recieve a post in the post_content, and that you are using a valid 
+        application password</h4>
+<form method="POST">
+<label for="endpoint">Endpoint:</label><br>
+<input type="text" name="endpoint" id="endpoint" placeholder="http://example.com/api-endpoint"><br>
+<label for="username">Username:</label><br>
+<input type="text" name="username" id="username"><br>
+<label for="password">Password:</label><br>
+<input type="password" name="password" id="password"><br>
+<input type="submit" value="Send POST Request" style="margin-top: 15px">
+</form>
+</div>
+
 <?php
-
-// Echo the formatted data with a copy button
-echo '<div style=" padding:15px; padding-bottom: 0px;">';
-echo '<h1> EKTAS Site Info Plugin </h1>';
-echo '<h4> Export site info at the click of a button! </h4>';
-echo '<hr></hr>';
-echo "<h3> Your Site's Info JSON</h3>";
-echo '<textarea id="json-output" rows="20" cols="70">';
-echo $data_string_formatted;
-echo '</textarea>';
-echo '<br>';
-echo '<button onclick="copyToClipboard()">Copy to Clipboard</button>';
-echo '</div>';
-
-// Form for specifying the endpoint, username, and password
-echo '<div style="padding: 10px;">';
-echo '<h4> Make sure your endpoint can recieve a post in the post_content, and that you are using a valid 
-        application password</h4>';
-echo '<form method="POST">';
-echo '<label for="endpoint">Endpoint:</label><br>';
-echo '<input type="text" name="endpoint" id="endpoint" placeholder="http://example.com/api-endpoint"><br>';
-echo '<label for="username">Username:</label><br>';
-echo '<input type="text" name="username" id="username"><br>';
-echo '<label for="password">Password:</label><br>';
-echo '<input type="password" name="password" id="password"><br>';
-echo '<input type="submit" value="Send POST Request" style="margin-top: 15px;">';
-echo '</form>';
-echo '</div>';
 
 
 // Handle the form submission
@@ -270,17 +248,6 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
     $response = curl_exec($ch);
     curl_close($ch);
 
-    //Check the response for debug
-    // if ($response === false) {
-    //     echo 'Failed to send the POST request.';
-    // } else {
-    //     echo 'POST request sent successfully.';
-    //     echo '<br>';
-    //     echo 'Response from the endpoint:<br>';
-    //     echo '<pre style="white-space: pre-wrap; word-wrap: break-word;">' . htmlentities($response) . '</pre>';
-    // }
-
-
     // Decode the response JSON to extract the post ID
     $response_data = json_decode($response, true);
 ?>
@@ -306,7 +273,6 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
     transition: background-color 0.3s;
   }
 </style>
-
 
 <?php //output response with a collapsible button ?>
 <script>
@@ -342,7 +308,3 @@ if (isset($_POST['endpoint'], $_POST['username'], $_POST['password'])) {
   }
 }
 ?>
-
-
-
-
